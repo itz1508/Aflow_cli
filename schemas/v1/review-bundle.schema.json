@@ -1,0 +1,17 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://theoneshot.dev/schemas/aflow/v1/review-bundle.schema.json",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["manifest", "artifacts"],
+  "properties": {
+    "manifest": {
+      "type": "object",
+      "properties": {
+        "outcome": {"enum": ["review_processed_all_gaps_disposed", "review_processed_with_unresolved_gaps", "decision_required"]},
+        "processing_summary": {"type": "object", "required": ["plan_processed", "evaluation_completed", "stages_executed", "gaps_discovered", "gaps_resolved", "gaps_unresolved", "gap_count_limit_applied", "unresolved_items_preserved"]}
+      }
+    },
+    "artifacts": {"type": "object", "additionalProperties": {"type": "string"}}
+  }
+}

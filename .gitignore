@@ -1,0 +1,21 @@
+.venv/  
+__pycache__/  
+*.py[cod]  
+.pytest_cache/  
+build/  
+dist/  
+*.egg-info/  
+out/  
+
+# Local secrets and environment files
+.env
+.env.*
+!.env.example
+
+# Local dependencies and tool state
+node_modules/
+supabase/.temp/
+
+# Generated demonstrations and release evidence
+demo-output/
+release-evidence/

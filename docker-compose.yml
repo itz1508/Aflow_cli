@@ -1,0 +1,40 @@
+services:
+  ollama:
+    image: ollama/ollama:0.9.6
+    volumes:
+      - ollama-models:/root/.ollama
+    expose:
+      - "11434"
+    healthcheck:
+      test: ["CMD", "ollama", "list"]
+      interval: 10s
+      timeout: 5s
+      retries: 30
+  model-setup:
+    image: ollama/ollama:0.9.6
+    depends_on:
+      ollama:
+        condition: service_healthy
+    environment:
+      OLLAMA_HOST: http://ollama:11434
+    entrypoint: ["/bin/sh", "-c"]
+    command: ["ollama pull qwen2.5-coder:7b"]
+    volumes:
+      - ollama-models:/root/.ollama
+  aflow:
+    build: .
+    depends_on:
+      model-setup:
+        condition: service_completed_successfully
+    environment:
+      AFLOW_OPERATIONS_ROOT: /var/lib/aflow/operations
+      AFLOW_PROVIDER: ollama
+      AFLOW_BASE_URL: http://ollama:11434
+      AFLOW_MODEL: qwen2.5-coder:7b
+    volumes:
+      - aflow-operations:/var/lib/aflow/operations
+      - ./:/workspace:ro
+    command: ["doctor"]
+volumes:
+  aflow-operations:
+  ollama-models:

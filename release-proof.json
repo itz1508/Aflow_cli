@@ -1,0 +1,14 @@
+{
+  "release_status": "blocked",
+  "source_revision": "uncommitted-initial-tree",
+  "package_version": "0.1.0",
+  "full_suite": {"command": "uv run pytest -q --tb=no", "run_1": {"collected": 40, "completed": 40}, "run_2": {"collected": 40, "completed": 40}},
+  "semantic_operation": {"operation_id": "aflow-after-execution-verifier-semantic-final-001", "provider": "ollama", "model": "qwen2.5-coder:7b", "fallback_used": false, "gap_count": 5, "provenance": "operation-local semantic-provenance.json"},
+  "verification_operation": {"operation_id": "aflow-after-execution-verifier-semantic-final-001", "verification_attempt": 5, "verification_status": "passed", "work_state_revision": 5, "passed_validations": 3, "passed_fixtures": 3, "satisfied_criteria": 3},
+  "continuity_proof": {"restart_resume": "completed", "unseen_plan_operation_id": "aflow-unseen-plan-final-001", "stale_detection": "covered by tests/test_continuity.py"},
+  "source_installation": {"status": "completed", "non_editable": true, "doctor_ready": true},
+  "docker_proof": {"status": "blocked", "reason": "Docker Desktop Linux engine unavailable", "compose_config": "completed with .env.example"},
+  "public_interfaces": {"cli": ["review", "progress", "verify", "resume", "doctor", "status", "mcp"], "mcp": ["initialize", "tools/list", "aflow_review", "aflow_update_work_state", "aflow_verify", "aflow_resume", "aflow_status"]},
+  "known_limitations": ["Docker runtime proof requires a running Docker daemon", "External submission workflow is outside repository scope", "Stale integrity uses existence, size, mtime, and platform identity"],
+  "evidence_paths": ["out/final-operation-4", "out/unseen-operation", "out/clean-install-proof", "operation-local: AFlow/operations/aflow-after-execution-verifier-semantic-final-001/verification/attempts/000005", "operation-local: AFlow/operations/aflow-after-execution-verifier-semantic-final-001/semantic-provenance.json"]
+}

@@ -1,0 +1,69 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://theoneshot.dev/schemas/aflow/v1/aflow-trigger-context.schema.json",
+  "title": "A-Flow trigger context",
+  "description": "Classifies a user request for the host. A-Flow receives only the resulting immutable plan, never the raw task.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["request_id", "source_kind", "work_kind", "read_only", "expects_mutation"],
+  "properties": {
+    "request_id": {"type": "string", "minLength": 1},
+    "source_kind": {"enum": ["task", "plan"]},
+    "work_kind": {"enum": ["implementation", "configuration", "fix", "analysis", "research", "question"]},
+    "read_only": {"type": "boolean"},
+    "expects_mutation": {"type": "boolean"},
+    "task_summary": {"type": "string", "minLength": 1},
+    "original_plan": {"type": "string", "minLength": 1},
+    "trigger_action": {"enum": ["direct_review", "auto_review", "draft_plan", "skip"]}
+  },
+  "allOf": [
+    {
+      "if": {
+        "properties": {
+          "source_kind": {"const": "plan"},
+          "read_only": {"const": false},
+          "expects_mutation": {"const": true}
+        }
+      },
+      "then": {
+        "required": ["original_plan", "trigger_action"],
+        "properties": {"trigger_action": {"const": "direct_review"}}
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "source_kind": {"const": "plan"},
+          "read_only": {"const": false},
+          "expects_mutation": {"const": true},
+          "trigger_action": {"const": "auto_review"}
+        }
+      },
+      "then": {
+        "required": ["original_plan", "trigger_action"],
+        "properties": {"trigger_action": {"const": "auto_review"}}
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "source_kind": {"const": "task"},
+          "read_only": {"const": false},
+          "expects_mutation": {"const": true}
+        }
+      },
+      "then": {
+        "required": ["task_summary", "trigger_action"],
+        "properties": {"trigger_action": {"const": "draft_plan"}}
+      }
+    },
+    {
+      "if": {"properties": {"read_only": {"const": true}}},
+      "then": {"properties": {"trigger_action": {"const": "skip"}}}
+    },
+    {
+      "if": {"properties": {"expects_mutation": {"const": false}}},
+      "then": {"properties": {"trigger_action": {"const": "skip"}}}
+    }
+  ]
+}

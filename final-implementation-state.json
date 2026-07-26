@@ -1,0 +1,11 @@
+{
+  "schema_version": "1.0.0",
+  "artifact_version": "1.0",
+  "producer_version": "0.1.0",
+  "current_phase": "release-proof",
+  "completed_phases": ["plan-review", "verification-core", "deterministic-tests", "live-semantic-proof", "unseen-plan-proof", "clean-source-install", "mcp-process-proof"],
+  "validated_evidence": ["uv run pytest -q --tb=no x2", "live Ollama/Qwen operation", "CLI lifecycle", "MCP initialize/tools/list/tools-call", "clean non-editable source installation"],
+  "changed_files": ["src/aflow/contracts.py", "src/aflow/verification.py", "src/aflow/cli.py", "src/aflow/mcp_server.py", "src/aflow/config.py", "src/aflow/semantic.py", "src/aflow/core.py", "src/aflow/stages/companion.py", "src/aflow/stages/gap_discovery.py", "src/aflow/stages/gap_resolution.py", "src/aflow/stages/operation_setup.py", "tests/test_verification.py", "schemas/v1/verification.schema.json", "Dockerfile", "docker-compose.yml", "scripts/install-aflow.ps1", "docs/codex-integration.md", "docs/artifact-contracts.md", "README.md"],
+  "remaining_blockers": ["Docker daemon unavailable; Docker build/restart/model persistence proof not run", "external YouTube/Devpost submission actions outside repository scope"],
+  "next_exact_action": "Start Docker Desktop and run scripts/install-aflow.ps1 for distribution proof"
+}

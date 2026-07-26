@@ -1,0 +1,17 @@
+{
+  "type": "function",
+  "function": {
+    "name": "aflow_review",
+    "description": "Review an immutable plan and return additive companion artifacts. Never edits the plan or repository.",
+    "strict": true,
+    "parameters": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "original_plan": {"type": "string"},
+        "plan_id": {"type": "string"}
+      },
+      "required": ["original_plan", "plan_id"]
+    }
+  }
+}

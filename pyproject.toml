@@ -1,0 +1,26 @@
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[project]
+name = "theoneshot-aflow"
+version = "0.1.0"
+description = "Immutable-plan review CLI and MCP tool"
+readme = "README.md"
+requires-python = ">=3.11"
+dependencies = ["mcp>=1.27,<2"]
+
+[project.optional-dependencies]
+dev = ["pytest>=8.4,<9"]
+
+[project.scripts]
+aflow = "aflow.cli:main"
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/aflow"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+pythonpath = ["src"]
+addopts = ""
+
