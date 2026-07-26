@@ -14,7 +14,6 @@ out/
 
 # Local dependencies and tool state
 node_modules/
-supabase/.temp/
 
 # Generated demonstrations and release evidence
 demo-output/
