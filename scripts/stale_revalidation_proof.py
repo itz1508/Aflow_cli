@@ -28,7 +28,7 @@ from pathlib import Path
 
 REPO_ROOT = Path(__file__).resolve().parents[1]
 EVIDENCE = REPO_ROOT / "release-evidence" / "continuity-proof" / "stale-revalidation" / "proof.json"
-REAL_SOURCE_SENTINEL = REPO_ROOT / "src" / "aflow" / "work_state.py"
+REAL_SOURCE_SENTINEL = REPO_ROOT / "src" / "aflow_cli" / "work_state.py"
 
 PLAN = (
     "## Implement module A\n"
@@ -95,8 +95,8 @@ def main() -> int:
 
     real_source_hash_before = hashlib.sha256(REAL_SOURCE_SENTINEL.read_bytes()).hexdigest()
 
-    from aflow.core import review_plan
-    from aflow.work_state import _operation_dir, resume_operation, update_work_state
+    from aflow_cli.core import review_plan
+    from aflow_cli.work_state import _operation_dir, resume_operation, update_work_state
 
     oid = "stale-revalidation-proof"
     review_plan(original_plan=PLAN, plan_id=oid, operation_id=oid, repository_root=str(repo), user_prompt="proof", force_canonical=True)

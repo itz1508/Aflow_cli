@@ -67,10 +67,10 @@ def _sanitize(value):
 
 
 def main() -> int:
-    from aflow.semantic import _stable_observation_id, local_semantic_notes
+    from aflow_cli.semantic import _stable_observation_id, local_semantic_notes
 
     ollama = {"provider": "ollama", "base_url": "http://127.0.0.1:11434", "model": "qwen2.5-coder:7b"}
-    import aflow.semantic as semantic_mod
+    import aflow_cli.semantic as semantic_mod
 
     evidence: dict = {"proof_type": "semantic-truncation-continuation"}
 

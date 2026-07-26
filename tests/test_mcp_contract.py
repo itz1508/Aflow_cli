@@ -3,7 +3,7 @@ from __future__ import annotations
 import jsonschema
 import pytest
 
-from aflow.mcp_server import (
+from aflow_cli.mcp_server import (
     aflow_review,
     resume_tool_schema,
     status_tool_schema,

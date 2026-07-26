@@ -8,6 +8,6 @@ if (-not (Get-Command winget -ErrorAction SilentlyContinue)) { throw "WinGet is 
 if (-not (Get-Command py -ErrorAction SilentlyContinue)) {
     winget install --id Python.Python.3.12 -e --accept-source-agreements --accept-package-agreements
 }
-py -3.12 -m pip install --upgrade "theoneshot-aflow==$Version"
-aflow setup --yes
-aflow doctor
+py -3.12 -m pip install --upgrade "theoneshot-aflow-cli==$Version"
+aflow-cli setup --yes
+aflow-cli doctor

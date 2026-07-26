@@ -2,7 +2,7 @@ from __future__ import annotations
 
 from pathlib import Path
 
-from aflow.cli import main
+from aflow_cli.cli import main
 
 
 def test_demo_review_and_bundle_validation(tmp_path, capsys):

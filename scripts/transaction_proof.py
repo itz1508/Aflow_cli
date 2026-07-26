@@ -43,7 +43,7 @@ def _now():
 
 
 def _passing_spec():
-    from aflow.contracts import version_fields
+    from aflow_cli.contracts import version_fields
 
     return {
         **version_fields(),
@@ -65,9 +65,9 @@ def _passing_spec():
 
 
 def _seed_operation(oid: str):
-    from aflow.contracts import version_fields
-    from aflow.core import review_plan
-    from aflow.work_state import _operation_dir
+    from aflow_cli.contracts import version_fields
+    from aflow_cli.core import review_plan
+    from aflow_cli.work_state import _operation_dir
 
     review_plan(original_plan=PLAN, plan_id=oid, operation_id=oid, repository_root=str(REPO_ROOT), user_prompt="proof", force_canonical=True)
     op = _operation_dir(oid)
@@ -84,8 +84,8 @@ def main() -> int:
     op_root = Path(tempfile.mkdtemp(prefix="aflow_txn_proof_"))
     os.environ["AFLOW_OPERATIONS_ROOT"] = str(op_root)
 
-    from aflow.verification import verify_operation
-    from aflow.work_state import ReviewError, load_continuation_package, update_work_state
+    from aflow_cli.verification import verify_operation
+    from aflow_cli.work_state import ReviewError, load_continuation_package, update_work_state
 
     evidence: dict = {"proof_type": "transaction-and-concurrency"}
 

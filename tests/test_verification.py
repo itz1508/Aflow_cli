@@ -3,10 +3,10 @@ from __future__ import annotations
 import json
 import sys
 
-from aflow.contracts import ContractError, execute_command, version_fields
-from aflow.core import review_plan
-from aflow.mcp_server import aflow_status, aflow_verify, status_tool_schema, verify_tool_schema
-from aflow.verification import status_operation, verify_operation
+from aflow_cli.contracts import ContractError, execute_command, version_fields
+from aflow_cli.core import review_plan
+from aflow_cli.mcp_server import aflow_status, aflow_verify, status_tool_schema, verify_tool_schema
+from aflow_cli.verification import status_operation, verify_operation
 
 
 def _operation(tmp_path, monkeypatch):
@@ -20,7 +20,7 @@ def _operation(tmp_path, monkeypatch):
         user_prompt="test",
         force_canonical=True,
     )
-    from aflow.work_state import _operation_dir
+    from aflow_cli.work_state import _operation_dir
     op = _operation_dir(oid)
     op.joinpath("success-criteria.json").write_text(json.dumps({**version_fields(), "criteria": [{"criterion_id": "criterion-implementation", "source_plan_step_ids": ["step-001"]}]}), encoding="utf-8")
     op.joinpath("validation-specs.json").write_text(json.dumps({"validations": [{**version_fields(), "validation_id": "validation-implementation", "covered_criterion_ids": ["criterion-implementation"], "executable": sys.executable, "arguments": ["-c", "print('ok')"], "working_directory": ".", "timeout_seconds": 3, "environment_allowlist": [], "stdin_policy": "closed", "expected_exit_codes": [0], "maximum_stdout_bytes": 1000, "maximum_stderr_bytes": 1000, "encoding": "utf-8", "required": True}]}), encoding="utf-8")
@@ -45,7 +45,7 @@ def test_verification_persists_attempt_and_cli_mcp_share_service(tmp_path, monke
     result = verify_operation(oid)
     assert result["verification_status"] == "passed"
     assert result["verification_attempt"] == 1
-    from aflow.work_state import _operation_dir
+    from aflow_cli.work_state import _operation_dir
     op = _operation_dir(oid)
     assert (op / "verification" / "attempts" / "000001" / "final-result.json").exists()
     assert aflow_verify(operation_id=oid)["verification_attempt"] == 2

@@ -5,15 +5,15 @@ environment created OUTSIDE the repository, then exercises the full command
 battery from a working directory that is also outside the repository, using
 only the installed console script / module (never the repo source tree):
 
-  * aflow --help
-  * aflow doctor
+  * aflow-cli --help
+  * aflow-cli doctor
   * a real MCP stdio round trip (initialize / tools/list / tool call /
     unknown-property rejection) against the installed package
-  * aflow review  (immutable-plan review, live semantic notes)
-  * aflow progress (work-state update through the installed package)
-  * aflow verify   (independent execution of review-generated validations)
-  * aflow resume   (state reload in a brand-new process == restart)
-  * aflow status   (read-only state report)
+  * aflow-cli review  (immutable-plan review, live semantic notes)
+  * aflow-cli progress (work-state update through the installed package)
+  * aflow-cli verify   (independent execution of review-generated validations)
+  * aflow-cli resume   (state reload in a brand-new process == restart)
+  * aflow-cli status   (read-only state report)
 
 Every command's exit code and a sanitized output snippet are recorded.
 Sanitized evidence -> release-evidence/clean-install/proof.json
@@ -82,12 +82,12 @@ async def _mcp_round_trip(venv_python: Path, workdir: Path, ops_root: Path) -> d
     env["PYTHONUTF8"] = "1"
     params = StdioServerParameters(
         command=str(venv_python),
-        args=["-m", "aflow.cli", "mcp"],
+        args=["-m", "aflow_cli.cli", "mcp"],
         cwd=str(workdir),
         env=env,
     )
     errlog_path = workdir / "mcp_stderr.log"
-    result: dict = {"entrypoint": "<venv>/python -m aflow.cli mcp (installed, stdio)"}
+    result: dict = {"entrypoint": "<venv>/python -m aflow_cli.cli mcp (installed, stdio)"}
     with errlog_path.open("w", encoding="utf-8") as errlog:
         async with stdio_client(params, errlog=errlog) as (read, write):
             async with ClientSession(read, write) as session:
@@ -162,7 +162,7 @@ def main() -> int:
     venv_build = subprocess.run([sys.executable, "-m", "venv", str(venv)], capture_output=True, text=True)
     evidence["venv_create"] = {"returncode": venv_build.returncode, "stderr_tail": (venv_build.stderr or "")[-400:]}
     venv_python = venv / ("Scripts/python.exe" if os.name == "nt" else "bin/python")
-    aflow_exe = venv / ("Scripts/aflow.exe" if os.name == "nt" else "bin/aflow")
+    aflow_exe = venv / ("Scripts/aflow-cli.exe" if os.name == "nt" else "bin/aflow-cli")
 
     # 3. Install the wheel non-editable into the fresh venv (uv resolves deps from cache).
     install = subprocess.run(
@@ -192,9 +192,9 @@ def main() -> int:
     bundle_dir = workdir / "bundle"
 
     # 4. help
-    help_step = record("aflow --help", run_aflow(["--help"]))
+    help_step = record("aflow-cli --help", run_aflow(["--help"]))
     # 5. doctor
-    doctor_step = record("aflow doctor", run_aflow(["doctor"]))
+    doctor_step = record("aflow-cli doctor", run_aflow(["doctor"]))
     # 6. MCP round trip against the installed package
     evidence["mcp"] = _sanitizer()(asyncio.run(_mcp_round_trip(venv_python, workdir, ops_root / "mcp")))
 
@@ -202,7 +202,7 @@ def main() -> int:
     plan_file = workdir / "plan.md"
     plan_file.write_text(PLAN, encoding="utf-8")
     rev = record(
-        "aflow review",
+        "aflow-cli review",
         run_aflow([
             "review", "--plan", str(plan_file), "--plan-id", op_id,
             "--operation-id", op_id, "--repository-root", str(workdir),
@@ -219,14 +219,14 @@ def main() -> int:
         "last_completed_action": "clean-install progress probe",
         "next_exact_action": "Run independent verification",
     }), encoding="utf-8")
-    progress_step = record("aflow progress", run_aflow(["progress", "--operation-id", op_id, "--update-file", str(update_file)]))
+    progress_step = record("aflow-cli progress", run_aflow(["progress", "--operation-id", op_id, "--update-file", str(update_file)]))
 
     # 9. verify (independent execution of review-generated validations)
-    verify_step = record("aflow verify", run_aflow(["verify", "--operation-id", op_id]))
+    verify_step = record("aflow-cli verify", run_aflow(["verify", "--operation-id", op_id]))
     # 10. resume == restart: brand-new process reloads persisted state
-    resume_step = record("aflow resume (restart)", run_aflow(["resume", "--operation-id", op_id]))
+    resume_step = record("aflow-cli resume (restart)", run_aflow(["resume", "--operation-id", op_id]))
     # 11. status
-    status_step = record("aflow status", run_aflow(["status", "--operation-id", op_id]))
+    status_step = record("aflow-cli status", run_aflow(["status", "--operation-id", op_id]))
 
     evidence["commands"] = steps
 

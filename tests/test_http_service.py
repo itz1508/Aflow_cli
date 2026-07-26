@@ -4,8 +4,8 @@ import json
 import threading
 from urllib.request import Request, urlopen
 
-from aflow.core import validate_bundle
-from aflow.http_service import create_server, handle_request
+from aflow_cli.core import validate_bundle
+from aflow_cli.http_service import create_server, handle_request
 
 
 PLAN = "Objective: test HTTP review\nSuccess criteria: immutable\nValidation: bundle\nFixture: request\n"

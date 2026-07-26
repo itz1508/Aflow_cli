@@ -14,7 +14,7 @@ the judge path and does not require Ollama:
 
 ```powershell
 winget install --id astral-sh.uv -e
-.\scripts\judge-smoke.ps1 -WheelPath .\theoneshot_aflow-0.1.0-py3-none-any.whl
+.\scripts\judge-smoke.ps1 -WheelPath .\theoneshot_aflow_cli-0.1.0-py3-none-any.whl
 ```
 
 The script installs the wheel into an isolated `uv` tool environment, runs the
@@ -22,33 +22,33 @@ demo, and validates its bundle. It makes no source-code changes. Until a
 release wheel is attached, test a checkout with:
 
 ```powershell
-uv tool run --from . aflow demo --output-dir .\aflow-demo
-uv tool run --from . aflow validate-bundle --output-dir .\aflow-demo
+uv tool run --from . aflow-cli demo --output-dir .\aflow-demo
+uv tool run --from . aflow-cli validate-bundle --output-dir .\aflow-demo
 ```
 
 ## Windows quick start
 
 ```powershell
 uv sync --extra dev
-uv run aflow review --plan .\plan.md --plan-id release-plan --output-dir .\aflow-output
-uv run aflow validate-bundle --output-dir .\aflow-output
+uv run aflow-cli review --plan .\plan.md --plan-id release-plan --output-dir .\aflow-output
+uv run aflow-cli validate-bundle --output-dir .\aflow-output
 ```
 
-`aflow setup --yes` is optional. It may install Ollama through WinGet and
+`aflow-cli setup --yes` is optional. It may install Ollama through WinGet and
 downloads `qwen2.5-coder:7b` for local semantic notes. It records only the
 local endpoint and model name; no API key is persisted.
 
 ## Tool calling
 
 ```powershell
-uv run aflow mcp
+uv run aflow-cli mcp
 ```
 
 After installing the wheel, add this to Codex `config.toml` and restart Codex:
 
 ```toml
 [mcp_servers.aflow]
-command = "aflow"
+command = "aflow-cli"
 args = ["mcp"]
 startup_timeout_sec = 20.0
 tool_timeout_sec = 90.0
@@ -84,16 +84,16 @@ file is returned when resolving a gap would change design.
 
 ```powershell
 uv run pytest -q
-uv run aflow demo --output-dir .\demo-output
-uv run aflow validate-bundle --output-dir .\demo-output
+uv run aflow-cli demo --output-dir .\demo-output
+uv run aflow-cli validate-bundle --output-dir .\demo-output
 ```
 
 ## Independent verification
 
-`aflow verify --operation-id <operation_id>` executes versioned validation and
+`aflow-cli verify --operation-id <operation_id>` executes versioned validation and
 fixture contracts, records historical attempts, assesses required criteria,
-and updates the existing work state. `aflow status --operation-id` is
-read-only; `aflow resume --operation-id` reloads continuity and reports the
+and updates the existing work state. `aflow-cli status --operation-id` is
+read-only; `aflow-cli resume --operation-id` reloads continuity and reports the
 next exact action.
 
 Validation commands use structured executable arrays, closed stdin, explicit

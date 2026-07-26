@@ -64,7 +64,7 @@ def _validate(args):
 
 def _setup(args):
     if not args.yes:
-        raise SetupError("Run aflow setup --yes to approve")
+        raise SetupError("Run aflow-cli setup --yes to approve")
     result = setup_ollama(model=args.model)
     _print({"endpoint": result.endpoint, "model": result.model, "state": "ready"})
     return 0
@@ -134,7 +134,7 @@ def _status(args):
 
 def main(argv=None):
     import argparse
-    parser = argparse.ArgumentParser(prog="aflow")
+    parser = argparse.ArgumentParser(prog="aflow-cli")
     commands = parser.add_subparsers(dest="command", required=True)
     review = commands.add_parser("review")
     review.add_argument("--plan", required=True)

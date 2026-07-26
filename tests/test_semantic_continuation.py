@@ -4,21 +4,21 @@ import json
 
 import pytest
 
-from aflow.semantic import (
+from aflow_cli.semantic import (
     _extract_observations,
     _merge_dedupe,
     _stable_observation_id,
     local_semantic_notes,
 )
-from aflow.semantic_provenance import load_semantic_provenance
-from aflow.stages.gap_discovery import discover_gaps
+from aflow_cli.semantic_provenance import load_semantic_provenance
+from aflow_cli.stages.gap_discovery import discover_gaps
 
 OLLAMA_CONFIG = {"provider": "ollama", "base_url": "http://127.0.0.1:11434", "model": "test-model"}
 
 
 @pytest.fixture(autouse=True)
 def _force_ollama(monkeypatch):
-    monkeypatch.setattr("aflow.semantic.load_config", lambda: dict(OLLAMA_CONFIG))
+    monkeypatch.setattr("aflow_cli.semantic.load_config", lambda: dict(OLLAMA_CONFIG))
 
 
 def _sequence(*responses):
@@ -113,7 +113,7 @@ def test_exception_yields_labeled_fallback(tmp_path):
 
 
 def test_wrong_provider_is_skipped(monkeypatch):
-    monkeypatch.setattr("aflow.semantic.load_config", lambda: {"provider": "openai", "base_url": "x", "model": "y"})
+    monkeypatch.setattr("aflow_cli.semantic.load_config", lambda: {"provider": "openai", "base_url": "x", "model": "y"})
     notes, prov = local_semantic_notes("## S\nx")
     assert notes == []
     assert prov.response_status == "skipped_wrong_provider"

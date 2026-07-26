@@ -1,6 +1,6 @@
 """Full continuity lifecycle proof: review -> progress -> verify -> resume.
 
-Drives the REAL `aflow` CLI subcommands as subprocesses against an isolated
+Drives the REAL `aflow-cli` CLI subcommands as subprocesses against an isolated
 operations root and an isolated repository root. Proves four invariants:
 
   1. No review rerun  - review artifacts (bundle + operation review outputs)
@@ -97,7 +97,7 @@ def main() -> int:
 
     def run_cli(args: list[str]) -> tuple[int, dict, str]:
         proc = subprocess.run(
-            [sys.executable, "-m", "aflow.cli", *args],
+            [sys.executable, "-m", "aflow_cli.cli", *args],
             cwd=str(REPO_ROOT),
             env=env,
             capture_output=True,

@@ -27,13 +27,13 @@ def develop_validations(
 
         # Map each criterion to concrete validation
         if cid == "cli-equivalence":
-            cmd = "Inspect src/aflow/cli.py main and src/aflow/mcp_server.py: both call shared service src/aflow/work_state.py and verification service (once implemented)"
+            cmd = "Inspect src/aflow_cli/cli.py main and src/aflow_cli/mcp_server.py: both call shared service src/aflow_cli/work_state.py and verification service (once implemented)"
             exp = "CLI and MCP equivalence proven via code path inspection"
-            ev = ["src/aflow/cli.py", "src/aflow/mcp_server.py", "src/aflow/work_state.py"]
+            ev = ["src/aflow_cli/cli.py", "src/aflow_cli/mcp_server.py", "src/aflow_cli/work_state.py"]
         elif cid == "mcp-unknown-rejection":
             cmd = "uv run pytest -q tests/test_mcp_contract.py tests/test_trigger_schema.py - verifies additionalProperties false"
             exp = "MCP unknown properties rejected"
-            ev = ["tests/test_mcp_contract.py", "src/aflow/mcp_server.py"]
+            ev = ["tests/test_mcp_contract.py", "src/aflow_cli/mcp_server.py"]
         elif cid == "validation-pass":
             cmd = "uv run pytest -q --basetemp external -o cache_dir=external to validate passing command handling"
             exp = "passed"
@@ -49,7 +49,7 @@ def develop_validations(
         elif cid == "validation-unsupported":
             cmd = "unsupported command detection via allowlist check"
             exp = "unsupported without shell execution"
-            ev = ["src/aflow/work_state.py"]
+            ev = ["src/aflow_cli/work_state.py"]
         elif cid == "fixture-pass":
             cmd = "fixture normal execution: setup -> exec -> compare -> cleanup"
             exp = "passed"
@@ -105,7 +105,7 @@ def develop_validations(
         elif cid == "repo-boundary-enforcement":
             cmd = "Attempt validation outside repository root, expect rejection"
             exp = "path traversal rejected"
-            ev = ["src/aflow/work_state.py path checks"]
+            ev = ["src/aflow_cli/work_state.py path checks"]
         elif cid == "no-review-rerun-during-verify":
             cmd = "uv run pytest -q tests/test_continuity.py::test_K_no_canonical_rerun"
             exp = "no canonical rerun during verification/resume"

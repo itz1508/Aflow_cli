@@ -61,7 +61,7 @@ def setup_ollama(*, runner: Runner | None = None, which: Callable[[str], str | N
             raise SetupError("Ollama installation failed") from exc
         executable = which("ollama")
         if executable is None:
-            raise SetupError("Ollama installed but is not on PATH; open a new terminal and run aflow setup again")
+            raise SetupError("Ollama installed but is not on PATH; open a new terminal and run aflow-cli setup again")
     tags = _json_request("/api/tags")
     if tags is None:
         selected.popen([executable, "serve"], stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)

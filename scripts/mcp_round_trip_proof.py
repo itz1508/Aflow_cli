@@ -80,12 +80,12 @@ async def _run(errlog_path: Path) -> dict:
 
     params = StdioServerParameters(
         command=sys.executable,
-        args=["-c", "from aflow.mcp_server import run_stdio; run_stdio()"],
+        args=["-c", "from aflow_cli.mcp_server import run_stdio; run_stdio()"],
         cwd=str(REPO_ROOT),
         env=env,
     )
 
-    evidence: dict = {"entrypoint": "python -c 'from aflow.mcp_server import run_stdio; run_stdio()' (stdio subprocess)"}
+    evidence: dict = {"entrypoint": "python -c 'from aflow_cli.mcp_server import run_stdio; run_stdio()' (stdio subprocess)"}
     operation_id = "mcp-proof-roundtrip"
 
     with errlog_path.open("w", encoding="utf-8") as errlog:

@@ -4,7 +4,7 @@ from pathlib import Path
 
 import pytest
 
-from aflow.core import ReviewError, review_plan, validate_bundle, write_bundle
+from aflow_cli.core import ReviewError, review_plan, validate_bundle, write_bundle
 
 
 FIXTURES = Path(__file__).parent / "fixtures"

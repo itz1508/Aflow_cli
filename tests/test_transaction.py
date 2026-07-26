@@ -4,10 +4,10 @@ import datetime
 import json
 import sys
 
-from aflow.contracts import version_fields
-from aflow.core import review_plan
-from aflow.verification import verify_operation
-from aflow.work_state import _operation_dir, load_continuation_package, update_work_state
+from aflow_cli.contracts import version_fields
+from aflow_cli.core import review_plan
+from aflow_cli.verification import verify_operation
+from aflow_cli.work_state import _operation_dir, load_continuation_package, update_work_state
 
 
 def _passing_operation(tmp_path, monkeypatch):

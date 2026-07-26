@@ -1,10 +1,10 @@
 from __future__ import annotations
 import json, os, pathlib, shutil, threading, time
 import pytest
-from aflow.core import review_plan
-from aflow.work_state import _operation_dir, load_continuation_package, resume_operation, update_work_state
-from aflow.cli import main as cli_main
-from aflow.mcp_server import aflow_resume, aflow_update_work_state
+from aflow_cli.core import review_plan
+from aflow_cli.work_state import _operation_dir, load_continuation_package, resume_operation, update_work_state
+from aflow_cli.cli import main as cli_main
+from aflow_cli.mcp_server import aflow_resume, aflow_update_work_state
 
 PLAN = "## Step One\nImplement feature\n## Step Two\nValidate feature\n## Step Three\nFinalize\nObjective: test continuity\nSuccess criteria: all steps\nValidation: pytest\nFixture: sample\n"
 
@@ -66,10 +66,10 @@ def test_D_validated_completes():
     upd = json.loads((d / "updated-plan.json").read_text())
     sid = upd["steps"][0]["step_id"]
     now = _now()
-    rec = {"validation_id": "val-001", "covered_step_ids": [sid], "covered_file_paths": ["src/aflow/core.py"], "method": "command", "command": "pytest -q", "exit_code": 0, "status": "passed", "captured_output_path": "evidence/val-001.txt", "evidence_paths": [], "file_states": {"src/aflow/core.py": {"exists": True, "size_bytes": 100, "modified_time": now}}, "recorded_at": now, "last_verified_at": now}
+    rec = {"validation_id": "val-001", "covered_step_ids": [sid], "covered_file_paths": ["src/aflow_cli/core.py"], "method": "command", "command": "pytest -q", "exit_code": 0, "status": "passed", "captured_output_path": "evidence/val-001.txt", "evidence_paths": [], "file_states": {"src/aflow_cli/core.py": {"exists": True, "size_bytes": 100, "modified_time": now}}, "recorded_at": now, "last_verified_at": now}
     (d / "evidence").mkdir(exist_ok=True)
     (d / "evidence" / "val-001.txt").write_text("passed", encoding="utf-8")
-    cont = update_work_state(operation_id=oid, expected_revision=1, completed_step_ids=[sid], current_step_id=None, changed_files=["src/aflow/core.py"], created_files=[], deleted_files=[], validation_records=[rec], unresolved_items=[], last_completed_action="completed", next_exact_action="next")
+    cont = update_work_state(operation_id=oid, expected_revision=1, completed_step_ids=[sid], current_step_id=None, changed_files=["src/aflow_cli/core.py"], created_files=[], deleted_files=[], validation_records=[rec], unresolved_items=[], last_completed_action="completed", next_exact_action="next")
     assert cont["work_state_revision"] == 2
     assert cont["updated_plan"]["steps"][0]["status"] == "completed"
 
@@ -86,12 +86,12 @@ def test_F_failed_reopens():
     upd = json.loads((d / "updated-plan.json").read_text())
     sid = upd["steps"][0]["step_id"]
     now = _now()
-    rec_pass = {"validation_id": "val-001", "covered_step_ids": [sid], "covered_file_paths": ["src/aflow/core.py"], "method": "command", "command": "pytest", "exit_code": 0, "status": "passed", "captured_output_path": "evidence/val-001.txt", "evidence_paths": [], "file_states": {"src/aflow/core.py": {"exists": True, "size_bytes": 10, "modified_time": now}}, "recorded_at": now, "last_verified_at": now}
+    rec_pass = {"validation_id": "val-001", "covered_step_ids": [sid], "covered_file_paths": ["src/aflow_cli/core.py"], "method": "command", "command": "pytest", "exit_code": 0, "status": "passed", "captured_output_path": "evidence/val-001.txt", "evidence_paths": [], "file_states": {"src/aflow_cli/core.py": {"exists": True, "size_bytes": 10, "modified_time": now}}, "recorded_at": now, "last_verified_at": now}
     (d / "evidence").mkdir(exist_ok=True)
     (d / "evidence" / "val-001.txt").write_text("ok", encoding="utf-8")
     update_work_state(operation_id=oid, expected_revision=1, completed_step_ids=[sid], current_step_id=None, changed_files=[], created_files=[], deleted_files=[], validation_records=[rec_pass], unresolved_items=[], last_completed_action="done", next_exact_action="next")
     now2 = _now()
-    rec_fail = {"validation_id": "val-001", "covered_step_ids": [sid], "covered_file_paths": ["src/aflow/core.py"], "method": "command", "command": "pytest", "exit_code": 1, "status": "failed", "captured_output_path": "evidence/val-001-fail.txt", "evidence_paths": [], "file_states": {"src/aflow/core.py": {"exists": True, "size_bytes": 10, "modified_time": now2}}, "recorded_at": now2, "last_verified_at": now2}
+    rec_fail = {"validation_id": "val-001", "covered_step_ids": [sid], "covered_file_paths": ["src/aflow_cli/core.py"], "method": "command", "command": "pytest", "exit_code": 1, "status": "failed", "captured_output_path": "evidence/val-001-fail.txt", "evidence_paths": [], "file_states": {"src/aflow_cli/core.py": {"exists": True, "size_bytes": 10, "modified_time": now2}}, "recorded_at": now2, "last_verified_at": now2}
     (d / "evidence" / "val-001-fail.txt").write_text("failed", encoding="utf-8")
     cont2 = update_work_state(operation_id=oid, expected_revision=2, completed_step_ids=[], current_step_id=None, changed_files=[], created_files=[], deleted_files=[], validation_records=[rec_fail], unresolved_items=[], last_completed_action=None, next_exact_action="rerun")
     step = [s for s in cont2["updated_plan"]["steps"] if s["step_id"] == sid][0]
@@ -271,7 +271,7 @@ def test_Q_unknown_refs():
 def test_R_resume_operation_id_only():
     oid, d = _create_op("R")
     import subprocess, sys
-    cmd = [sys.executable, "-c", f"from aflow.work_state import resume_operation; pkg=resume_operation(operation_id='{oid}'); print(pkg['operation_id'])"]
+    cmd = [sys.executable, "-c", f"from aflow_cli.work_state import resume_operation; pkg=resume_operation(operation_id='{oid}'); print(pkg['operation_id'])"]
     result = subprocess.run(cmd, cwd=r"D:\Dev\Aflow_cli", capture_output=True, text=True)
     assert result.returncode == 0
     assert oid in result.stdout

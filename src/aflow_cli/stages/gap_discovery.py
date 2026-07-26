@@ -253,7 +253,7 @@ def discover_gaps(
                 affected_plan_section="Work-state integration",
                 missing_information="Exact module and function name of existing canonical work-state service that verification must reuse (update_work_state vs new implementation)",
                 why_required="Spec requires updating work state through existing canonical service, not creating second engine; implementation needs concrete service reference path.",
-                required_evidence="src/aflow/work_state.py existing functions, operation_config",
+                required_evidence="src/aflow_cli/work_state.py existing functions, operation_config",
                 resolution_status="pending",
             ))
 

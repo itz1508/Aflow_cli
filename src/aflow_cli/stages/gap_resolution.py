@@ -29,7 +29,7 @@ class ResolutionRecord:
 _MATERIAL_GAP_RESOLUTIONS: dict[str, dict[str, Any]] = {
     "mcp-unknown-properties-enforcement": {
         "evidence": "existing mcp_server.py uses additionalProperties:false for aflow_review, aflow_update_work_state, aflow_resume; pattern confirmed",
-        "sources": ["src/aflow/mcp_server.py:tool schemas", "src/aflow/schemas"],
+        "sources": ["src/aflow_cli/mcp_server.py:tool schemas", "src/aflow_cli/schemas"],
         "correction": "Define aflow_verify MCP schema with type: object, required [operation_id], properties operation_id string, additionalProperties: false, matching existing MCP tools pattern.",
     },
     "validation-timeout-value": {
@@ -38,8 +38,8 @@ _MATERIAL_GAP_RESOLUTIONS: dict[str, dict[str, Any]] = {
         "correction": "Define default timeout: 120 seconds per validation command execution, 30 seconds per fixture, 60 seconds bounded for Ollama semantic calls; configurable via operation metadata; timed_out result assigned when exceeded.",
     },
     "working-dir-canonicalization": {
-        "evidence": "src/aflow/work_state.py _file_state_for_path resolves relative to repo_root; security requires canonicalization",
-        "sources": ["src/aflow/work_state.py:file_state", "src/aflow/stages/evidence.py:collect_repository_evidence"],
+        "evidence": "src/aflow_cli/work_state.py _file_state_for_path resolves relative to repo_root; security requires canonicalization",
+        "sources": ["src/aflow_cli/work_state.py:file_state", "src/aflow_cli/stages/evidence.py:collect_repository_evidence"],
         "correction": "Working directory resolution must canonicalize via Path.resolve(), reject if resolved path is not inside recorded repository root (repo_root in canonicalized form), reject symlink escape and Windows drive escape, handle .. via resolve before check.",
     },
     "path-traversal-definition": {
@@ -49,12 +49,12 @@ _MATERIAL_GAP_RESOLUTIONS: dict[str, dict[str, Any]] = {
     },
     "security-path-traversal-rules": {
         "evidence": "security section requires remain within recorded repository root",
-        "sources": ["plan Security and repository boundaries", "src/aflow/work_state.py existing boundary check via Path.is_relative_to"],
+        "sources": ["plan Security and repository boundaries", "src/aflow_cli/work_state.py existing boundary check via Path.is_relative_to"],
         "correction": "Disallowed patterns include: ../ traversal outside repository root after canonicalization, absolute path outside recorded repo root, Windows UNC \\\\server\\\\share or drive escape D:\\\\, symlink resolving outside root; enforcement via canonicalized Path.is_relative_to(repository_root).",
     },
     "fixture-owned-definition": {
         "evidence": "fixture spec requires setup, input, expected result, cleanup behavior",
-        "sources": ["plan Fixture execution behavior", "src/aflow/stages/fixtures.py"],
+        "sources": ["plan Fixture execution behavior", "src/aflow_cli/stages/fixtures.py"],
         "correction": "Fixture-owned temporary state is any file path declared in fixture.input as temp_path or created under operation_dir/fixtures/<fixture_id>/; only those paths may be cleaned by fixture cleanup; unrelated repo state must not be touched, verified by checking path starts with repo_root fixture temp prefix.",
     },
     "verification-status-transitions": {
@@ -64,27 +64,27 @@ _MATERIAL_GAP_RESOLUTIONS: dict[str, dict[str, Any]] = {
     },
     "final-result-persistence-location": {
         "evidence": "operation persistence uses LOCALAPPDATA/AFlow/operations/<operation_id>/ with atomic .tmp replace and os.replace pattern",
-        "sources": ["src/aflow/stages/operation_setup.py:_get_operations_root", "src/aflow/work_state.py atomic write"],
+        "sources": ["src/aflow_cli/stages/operation_setup.py:_get_operations_root", "src/aflow_cli/work_state.py atomic write"],
         "correction": "Persist final result as operation_dir/final-result.json (or verification-result.json) using same atomic pattern: write to .tmp file then os.replace; include lock file .lock for concurrent protection; reuse _acquire_lock and revision protection.",
     },
     "completion-time-format": {
         "evidence": "work_state.py _now_iso returns datetime.now(timezone.utc).isoformat() - ISO-8601 UTC",
-        "sources": ["src/aflow/work_state.py:_now_iso"],
+        "sources": ["src/aflow_cli/work_state.py:_now_iso"],
         "correction": "completion_time must be ISO-8601 UTC timestamp produced by datetime.now(timezone.utc).isoformat(), matching existing work_state revision timestamps.",
     },
     "work-state-integration-service-reference": {
-        "evidence": "src/aflow/work_state.py provides update_work_state and resume_operation shared by CLI and MCP",
-        "sources": ["src/aflow/work_state.py:update_work_state", "src/aflow/cli.py progress/resume", "src/aflow/mcp_server.py aflow_update_work_state"],
-        "correction": "Verification must reuse src/aflow/work_state.py update_work_state for evidence attachment and status recalculation, requiring expected_revision increment; do not create second work-state engine.",
+        "evidence": "src/aflow_cli/work_state.py provides update_work_state and resume_operation shared by CLI and MCP",
+        "sources": ["src/aflow_cli/work_state.py:update_work_state", "src/aflow_cli/cli.py progress/resume", "src/aflow_cli/mcp_server.py aflow_update_work_state"],
+        "correction": "Verification must reuse src/aflow_cli/work_state.py update_work_state for evidence attachment and status recalculation, requiring expected_revision increment; do not create second work-state engine.",
     },
     "stale-file-inspection-scope": {
         "evidence": "work_state.py tracks file states via validation_report file_states dict and checks existence/size/mtime only",
-        "sources": ["src/aflow/work_state.py:_file_state_for_path", "resume_operation stale detection"],
+        "sources": ["src/aflow_cli/work_state.py:_file_state_for_path", "resume_operation stale detection"],
         "correction": "Stale detection source is validation_report validations[].file_states plus work-status changed_files; inspect only those paths via existence/size/mtime, not repo-wide scan; mark affected validation stale, covered completed steps in_progress, operation_status in_progress, next_action rerun validation.",
     },
     "atomic-write-interruption-handling": {
         "evidence": "work_state.py writes to .tmp then os.replace, releasing lock finally",
-        "sources": ["src/aflow/work_state.py atomic pattern, _acquire_lock O_EXCL"],
+        "sources": ["src/aflow_cli/work_state.py atomic pattern, _acquire_lock O_EXCL"],
         "correction": "Verification artifacts must use temporary file with .tmp suffix validated as JSON before os.replace; lock file .lock in operation dir with O_EXCL creation and 10s stale reclamation; revision conflict rejection when expected_revision != current; interrupted write preserves previous valid revision because replacement never happened.",
     },
     "success-criteria-satisfied-conditions": {
@@ -99,12 +99,12 @@ _MATERIAL_GAP_RESOLUTIONS: dict[str, dict[str, Any]] = {
     },
     "resume-after-verification-state": {
         "evidence": "resume_operation loads latest revision, checks only tracked files, returns continuation package; verification updates work state via same service",
-        "sources": ["src/aflow/work_state.py:resume_operation", "work-status.json regeneration"],
+        "sources": ["src/aflow_cli/work_state.py:resume_operation", "work-status.json regeneration"],
         "correction": "Resume after verification loads latest persisted state including final-result, verifies tracked file staleness, regenerates continuation package; does not rerun canonical review stages; next_exact_action reflects verification failure repair if any failed, else completion or remaining work.",
     },
     "verify-cli-operation-id-resolution": {
         "evidence": "operation_setup _get_operations_root uses LOCALAPPDATA/AFlow/operations or HOME/.aflow",
-        "sources": ["src/aflow/stages/operation_setup.py:_get_operations_root"],
+        "sources": ["src/aflow_cli/stages/operation_setup.py:_get_operations_root"],
         "correction": "Operation_id resolution: look up in _get_operations_root()/operation_id; if not found, raise unknown operation error; no implicit relative path search; repository_root remains recorded from operation-config.json.",
     },
 }

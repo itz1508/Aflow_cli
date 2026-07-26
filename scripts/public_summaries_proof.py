@@ -64,7 +64,7 @@ def main() -> int:
     env["AFLOW_OPERATIONS_ROOT"] = str(ops)
 
     def run_cli(args: list[str]) -> tuple[int, dict, str]:
-        proc = subprocess.run([sys.executable, "-m", "aflow.cli", *args], cwd=str(REPO_ROOT), env=env, capture_output=True, text=True)
+        proc = subprocess.run([sys.executable, "-m", "aflow_cli.cli", *args], cwd=str(REPO_ROOT), env=env, capture_output=True, text=True)
         try:
             parsed = json.loads(proc.stdout) if proc.stdout.strip() else {}
         except json.JSONDecodeError:

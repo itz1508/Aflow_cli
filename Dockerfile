@@ -16,4 +16,4 @@ RUN uv sync --frozen --no-dev --no-editable
 
 VOLUME ["/var/lib/aflow/operations", "/workspace"]
 
-ENTRYPOINT ["aflow"]
+ENTRYPOINT ["aflow-cli"]

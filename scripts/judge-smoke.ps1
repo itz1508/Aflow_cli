@@ -20,8 +20,8 @@ if (Test-Path -LiteralPath $output) {
     throw "Refusing to reuse existing output directory: $output"
 }
 
-uv tool run --from $wheel aflow demo --output-dir $output
+uv tool run --from $wheel aflow-cli demo --output-dir $output
 if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
 
-uv tool run --from $wheel aflow validate-bundle --output-dir $output
+uv tool run --from $wheel aflow-cli validate-bundle --output-dir $output
 exit $LASTEXITCODE
